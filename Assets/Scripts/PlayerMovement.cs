@@ -1,24 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
   private Rigidbody rb;
   private Vector3 direction = Vector3.zero;
-  private InventoryManager inventory;
-  
-  public GameObject spawnPoint = null;
+  public GameObject[] spawnPoints = null;
   public float speed = 10.0f;
   public float zLimit = 40;
   // Start is called before the first frame update
   void Start()
   {
+    if(!isLocalPlayer)
+    {
+      return;
+    }
+
     rb = GetComponent<Rigidbody>();
-    inventory = GetComponent<InventoryManager>();
+
+    spawnPoints = GameObject.FindGameObjectsWithTag("Respawn");
   }
 
-  private void Update() {
+  private void Update()
+  {
+    if (!isLocalPlayer)
+    {
+      return;
+    }
+
     float horzMove = Input.GetAxis("Horizontal");
     float vertMove = Input.GetAxis("Vertical");
 
@@ -28,6 +39,11 @@ public class PlayerMovement : MonoBehaviour
   // Update is called once per frame
   void FixedUpdate()
   {
+    if (!isLocalPlayer)
+    {
+      return;
+    }
+
     //rb.AddForce(direction * speed, ForceMode.Force);
     rb.MovePosition(transform.position + direction * speed * Time.deltaTime);
     
@@ -43,23 +59,21 @@ public class PlayerMovement : MonoBehaviour
 
   private void Respawn()
   {
-    rb.MovePosition(spawnPoint.transform.position);
-  }
-
-  private void OnTriggerEnter(Collider other)
-  {
-    if (other.CompareTag("Item"))
+    int index = 0;
+    while(Physics.CheckBox(spawnPoints[index].transform.position, new Vector3(1.5f, 1.5f, 1.5f)))
     {
-      ItemPickUp item = other.gameObject.GetComponent<ItemPickUp>();
-      inventory.AddToInventory(item);
-      inventory.PrintInventory();
-      Destroy(other.gameObject);
+      index++;
     }
-    
+    rb.MovePosition(spawnPoints[index].transform.position);
   }
 
   private void OnTriggerExit(Collider other)
   {
+    if (!isLocalPlayer)
+    {
+      return;
+    }
+
     if (other.CompareTag("Hazard")) {
       Respawn();
     }
