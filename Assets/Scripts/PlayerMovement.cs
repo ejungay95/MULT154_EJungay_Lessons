@@ -36,6 +36,16 @@ public class PlayerMovement : NetworkBehaviour
     direction = new Vector3(horzMove, 0, vertMove);
   }
 
+  private void OnDrawGizmos()
+  {
+    Gizmos.color = Color.yellow;
+    Gizmos.DrawRay(transform.position, direction * 10);
+    Gizmos.color = Color.magenta;
+    Gizmos.DrawRay(transform.position, rb.velocity * 5);
+    Gizmos.color = Color.blue;
+    Gizmos.DrawCube(transform.position, new Vector3(10f, 10f, 10f));
+  }
+
   // Update is called once per frame
   void FixedUpdate()
   {
@@ -44,8 +54,11 @@ public class PlayerMovement : NetworkBehaviour
       return;
     }
 
-    //rb.AddForce(direction * speed, ForceMode.Force);
-    rb.MovePosition(transform.position + direction * speed * Time.deltaTime);
+    // Note to self -- I uncommented this line and commented line 50 to 59 to answer question 3 for the rigidbody
+    // and for question 4 to see the magenta ray
+    rb.AddForce(direction * speed, ForceMode.Force);
+
+    /*rb.MovePosition(transform.position + direction * speed * Time.deltaTime);
     
     if(transform.position.z > zLimit)
     {
@@ -54,7 +67,7 @@ public class PlayerMovement : NetworkBehaviour
     else if(transform.position.z < -zLimit)
     {
       transform.position = new Vector3(transform.position.x, transform.position.y, -zLimit);
-    }
+    }*/
   }
 
   private void Respawn()
@@ -65,6 +78,7 @@ public class PlayerMovement : NetworkBehaviour
       index++;
     }
     rb.MovePosition(spawnPoints[index].transform.position);
+    rb.velocity = Vector3.zero;
   }
 
   private void OnTriggerExit(Collider other)

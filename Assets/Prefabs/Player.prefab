@@ -129,8 +129,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aa9c6f054d5b624e9a65be8f83a156b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnPoint: {fileID: 0}
-  speed: 35
+  spawnPoints: []
+  speed: 20
   zLimit: 40
 --- !u!114 &5139689644080478899
 MonoBehaviour:

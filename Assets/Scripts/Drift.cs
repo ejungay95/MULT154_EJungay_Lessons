@@ -49,6 +49,7 @@ public class Drift : MonoBehaviour
 
   // Added this because there was a weird glitch when moving from lilypads. The player would unparent to
   // the current lilypad but then wont parent to the lilypad the player wants to get to.
+/*
   private void OnCollisionStay(Collision collision) {
     if (collision.gameObject.CompareTag("Player")) {
       GameObject child = collision.gameObject;
@@ -63,5 +64,5 @@ public class Drift : MonoBehaviour
       GameObject child = collision.gameObject;
       child.transform.SetParent(null);
     }
-  }
+  }*/
 }
