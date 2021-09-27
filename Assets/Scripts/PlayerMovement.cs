@@ -58,7 +58,7 @@ public class PlayerMovement : NetworkBehaviour
     // and for question 4 to see the magenta ray
     rb.AddForce(direction * speed, ForceMode.Force);
 
-    /*rb.MovePosition(transform.position + direction * speed * Time.deltaTime);
+   //*rb.MovePosition(transform.position + direction * speed * Time.deltaTime);
     
     if(transform.position.z > zLimit)
     {
@@ -67,7 +67,7 @@ public class PlayerMovement : NetworkBehaviour
     else if(transform.position.z < -zLimit)
     {
       transform.position = new Vector3(transform.position.x, transform.position.y, -zLimit);
-    }*/
+    }
   }
 
   private void Respawn()
