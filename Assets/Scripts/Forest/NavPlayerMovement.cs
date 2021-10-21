@@ -33,10 +33,16 @@ public class NavPlayerMovement : MonoBehaviour
   Rigidbody rgBody = null;
   float trans = 0;
   float rotate = 0;
+  private Animator anim;
+  private Camera camera;
+  private Transform lookTarget;
 
   private void Start()
   {
     rgBody = GetComponent<Rigidbody>();
+    anim = GetComponentInChildren<Animator>();
+    camera = GetComponentInChildren<Camera>();
+    lookTarget = GameObject.Find("HeadAimTarget").transform;
   }
   void Update()
   {
@@ -49,6 +55,8 @@ public class NavPlayerMovement : MonoBehaviour
     // The value is in the range -1 to 1
     float translation = Input.GetAxis("Vertical");
     float rotation = Input.GetAxis("Horizontal");
+
+    anim.SetFloat("speed", translation);
 
     trans += translation;
     rotate += rotation;
@@ -64,5 +72,61 @@ public class NavPlayerMovement : MonoBehaviour
     Vector3 move = transform.forward * trans;
     rgBody.velocity = move * speed * Time.deltaTime;
     trans = 0;
+  }
+
+  private void OnCollisionEnter(Collision collision)
+  {
+    if(collision.collider.CompareTag("Hazard"))
+    {
+      anim.SetTrigger("died");
+      StartCoroutine(ZoomOut());
+    }
+    else
+    {
+      anim.SetTrigger("twitchLeftEar");
+    }
+  }
+
+  IEnumerator ZoomOut()
+  {
+    const int ITERATIONS = 24;
+    for(int i = 0; i < ITERATIONS; i++)
+    {
+      camera.transform.Translate(camera.transform.forward * -1 * 15.0f/ ITERATIONS);
+      yield return new WaitForSeconds(1.0f/ITERATIONS);
+    }
+  }
+
+  private void OnTriggerEnter(Collider other)
+  {
+    if(other.CompareTag("Hazard"))
+    {
+      //lookTarget.position = other.transform.position;
+      StartCoroutine(LookAndLookAway(lookTarget.position, other.transform.position));
+    }
+  }
+
+  IEnumerator LookAndLookAway(Vector3 targetPos, Vector3 hazardPos)
+  {
+    Vector3 targetDir = targetPos - transform.position;
+    Vector3 hazardDir = hazardPos - transform.position;
+
+    //float angle = Vector2.SignedAngle(new Vector2(targetPos.x, targetPos.z), new Vector2(hazardPos.x, hazardPos.z));
+    float angle = Vector2.SignedAngle(new Vector2(targetDir.x, targetDir.z), new Vector2(hazardDir.x, hazardDir.z));
+
+    const int INTERVALS = 20;
+    const float INTERVAL = 0.5f / INTERVALS;
+    float angleInterval = angle / INTERVALS;
+
+    for (int i = 0; i < INTERVALS; i++)
+    {
+      lookTarget.RotateAround(transform.position, Vector3.up, -angleInterval);
+      yield return new WaitForSeconds(INTERVAL);
+    }
+    for (int i = 0; i < INTERVALS; i++)
+    {
+      lookTarget.RotateAround(transform.position, Vector3.up, angleInterval);
+      yield return new WaitForSeconds(INTERVAL);
+    }
   }
 }
