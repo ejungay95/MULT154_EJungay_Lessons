@@ -36,7 +36,7 @@ public class PlayerMovement : NetworkBehaviour
     direction = new Vector3(horzMove, 0, vertMove);
   }
 
-  private void OnDrawGizmos()
+  /*private void OnDrawGizmos()
   {
     Gizmos.color = Color.yellow;
     Gizmos.DrawRay(transform.position, direction * 10);
@@ -44,7 +44,7 @@ public class PlayerMovement : NetworkBehaviour
     Gizmos.DrawRay(transform.position, rb.velocity * 5);
     Gizmos.color = Color.blue;
     Gizmos.DrawCube(transform.position, new Vector3(10f, 10f, 10f));
-  }
+  }*/
 
   // Update is called once per frame
   void FixedUpdate()
@@ -73,7 +73,7 @@ public class PlayerMovement : NetworkBehaviour
   private void Respawn()
   {
     int index = 0;
-    while(Physics.CheckBox(spawnPoints[index].transform.position, new Vector3(1.5f, 1.5f, 1.5f)))
+    while(Physics.CheckBox(spawnPoints[index].transform.position, new Vector3(1f, 1f, 1f)))
     {
       index++;
     }

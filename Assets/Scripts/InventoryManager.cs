@@ -58,7 +58,6 @@ public class InventoryManager : NetworkBehaviour
     if (other.CompareTag("Item"))
     {
       itemCollider = other;
-      
     }
   }
 
